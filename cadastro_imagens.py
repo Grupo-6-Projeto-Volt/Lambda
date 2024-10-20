@@ -1,4 +1,5 @@
 import boto3
+import json
 
 def lambda_handler(event, context):
     
@@ -10,17 +11,17 @@ def lambda_handler(event, context):
         bucket = s3.Bucket("s3-02231010")
         bucket.put_object(key=nome_imagem, body=imagem)
         
-        return {
+        return json.dumps({
             'status': 200,
             'params': event,
             'valid': True,
             'result': 'Upload da imagem para o S3 realizado com sucesso!'
-        }
+        })
         
     except Exception as e:
-        return {
+        return json.dumps({
             'status': 400,
             'params': event,
-            'valid': True,
-            'result': "Erro ao fazer upload da imagem para o S3: " + e
-        }
+            'valid': False,
+            'errorMessage': e
+        })
