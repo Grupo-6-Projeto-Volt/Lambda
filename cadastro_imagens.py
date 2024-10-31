@@ -1,4 +1,5 @@
 import boto3
+import base64
 
 def lambda_handler(event, context):
     
@@ -9,12 +10,16 @@ def lambda_handler(event, context):
 
         s3 = boto3.client('s3')
 
-        bucket = "s3-02231010" 
+        bucket = "bucket2-ichiban" 
         zone = s3.get_bucket_location(Bucket=bucket)["LocationConstraint"] 
 
         zone = zone if zone != None else 'us-east-1'
 
-        s3.put_object(Bucket=bucket, Key=nome_imagem, Body=imagem)
+        imagem = imagem[str(imagem).find(',') + 1:]
+
+        message_bytes = base64.b64decode(imagem.encode("ascii"))
+
+        s3.put_object(Bucket=bucket, Key=nome_imagem, Body=message_bytes)
         
         return {
             'status': 200,
